@@ -124,7 +124,7 @@ const HomePage = () => {
       </div>
       <div className="w-full p-6 bg-white">
       <div className="flex flex-wrap justify-center gap-6 md:gap-14 lg:gap-20 xl:gap-28 my-4">
-  <div className="flex flex-wrap justify-center gap-4 md:gap-6">
+  <div className="flex flex-wrap justify-center gap-4 md:gap-28">
     {tabs?.map((tab) => (
       <button
         key={tab}
@@ -179,7 +179,7 @@ const HomePage = () => {
         
         <div className="flex h-full justify-between flex-col">
           <div>
-            <h2 className="text-[24px] text-[#191919] font-bold">{meal.name}</h2>
+            <h2 className="text-[20px] my-2 text-[#191919] font-semibold">{meal.name}</h2>
             <p className="text-[13px] text-[#191919] text-medium">
               {meal.instructions?.join(" ") || "No instructions available."}
             </p>
