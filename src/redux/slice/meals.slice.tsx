@@ -24,7 +24,6 @@ export const fetchMeals = createAsyncThunk<any, any>(
       const response = await axios.get(
         `https://dummyjson.com/recipes`,
       );
-      console.log({response});
       return response.data;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(

@@ -5,20 +5,33 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { IoMdStar } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
-
+import StackedNotifications from "@/app/components/stackednotification";
+import { NotificationType } from "../helper/interface";
 
 const HomePage = () => {
   const { MealsData } = useSelector((state: RootState) => state.meal);
   const [activeTab, setActiveTab] = useState("All Meals");
   const tabs = ["All Meals", "Week 1", "Week 2", "Week 3", "Week 4"];
+  const [notification, setNotification] = useState<NotificationType | null>(
+    null
+  );
   const dispatch : any = useDispatch()
   useEffect(() => {
     dispatch(fetchMeals({}))
-
   },[])
+
+  // setNotification({
+  //   id: Date.now(),
+  //   text: "Successfully Send Notification",
+  //   type: "success",
+  // });
 
   return (
     <div className="bg-gradient-to-b from-[#f8e5e5] via-[#f1f5ff] to-[#dff1f1]">
+         <StackedNotifications
+              notification={notification}
+              setNotification={setNotification}
+            />
       <div className="bg-white">
   <div className="relative w-full h-[40vh] flex justify-center items-center">
     {/* Background Image */}
@@ -78,11 +91,14 @@ const HomePage = () => {
             alt={meal.name || "Meal"}
             className="rounded-xl w-full h-[220px] object-cover"
           />
+          <div className="flex h-full justify-between flex-col">
+          <div>
           <h2 className="text-[24px] text-[#191919] font-bold">{meal.name}</h2>
           <p className="text-[13px] text-[#191919] text-medium">
             {meal.instructions?.join(" ") || "No instructions available."}
           </p>
-          <div className="flex justify-between">
+          </div>
+          <div className="flex mt-2  justify-between">
             <p className="text-[13px] text-[#191919] font-bold">
               Cuisine:{" "}
               <span className="text-[13px] text-[#191919] font-medium">
@@ -98,6 +114,7 @@ const HomePage = () => {
                 <IoMdStar key={starIndex} className="w-[17px] h-[17px] text-[#004370]" />
               ))}
             </p>
+          </div>
           </div>
         </div>
       </div>

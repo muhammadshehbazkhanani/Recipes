@@ -11,7 +11,6 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   meal: mealsReducer,
- 
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
