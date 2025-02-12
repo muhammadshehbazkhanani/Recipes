@@ -1,9 +1,9 @@
-import { Inter } from "next/font/google";
+import { Poppins } from "next/font/google";
 
-const inter = Inter({ subsets: ["latin"] });
+const poppins = Poppins({ subsets: ["latin"], weight: ["400", "600", "700"] });
 
 export const metadata = {
-  title: "Meals Receipes",
+  title: "Meals Recipes",
   description: "Explore Racket Hub for top-quality rackets, sports gear, and accessories...",
   icons: { icon: "/favicon.ico" },
   robots: "index, follow",
@@ -20,7 +20,7 @@ export default function ServerLayout({ children }: { children: React.ReactNode }
         <link rel="icon" href={metadata.icons.icon} />
         <meta name="robots" content={metadata.robots} />
       </head>
-      <body style={{ fontFamily: inter.style.fontFamily, backgroundColor: "black" }}>
+      <body style={{ fontFamily: poppins.style.fontFamily, backgroundColor: "black" }}>
         {children}
       </body>
     </html>
