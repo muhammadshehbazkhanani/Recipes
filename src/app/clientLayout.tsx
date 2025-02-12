@@ -3,14 +3,15 @@
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { persistor, store } from "@/redux/store";
+import ServerLayout from "./serverLayout";
+import "./globals.css";
 
-
-export default function ClientLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <Provider store={store}>
-    <PersistGate loading={null} persistor={persistor}>
-     {children}
-    </PersistGate>
-  </Provider>
+      <PersistGate loading={null} persistor={persistor}>
+        <ServerLayout>{children}</ServerLayout>
+      </PersistGate>
+    </Provider>
   );
 }

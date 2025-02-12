@@ -1,6 +1,10 @@
-// components/Popup.tsx
-import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { setSelectedMealsForWeek } from "@/redux/slice/meals.slice";
+import StackedNotifications from "./stackednotification";
+import { NotificationType } from "../helper/interface";
 
 interface Meal {
   id: string;
@@ -9,37 +13,69 @@ interface Meal {
 
 interface PopupProps {
   data: Meal[];
-  onClose: () => void; // Function to close the popup
+  onClose: () => void;
 }
 
 const Popup = ({ data, onClose }: PopupProps) => {
+  const dispatch = useDispatch();
+  const weekMeals: any = useSelector((state: RootState) => state.meal);
+
   const [selectedWeek, setSelectedWeek] = useState<string | null>(null);
-  const [selectedPizzas, setSelectedPizzas] = useState<string[]>([]);
+  const [selectedMeals, setSelectedMeals] = useState<string[]>([]);
+  const [notification, setNotification] = useState<NotificationType | null>(
+    null
+  );
+  useEffect(() => {
+    if (selectedWeek) {
+      const preSelected = weekMeals[selectedWeek] || [];
+      setSelectedMeals(preSelected);
+    }
+  }, [selectedWeek, weekMeals]);
 
   const handleWeekChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedWeek(event.target.value);
-    setSelectedPizzas([]); // Reset selected pizzas when week changes
   };
 
-  const handlePizzaChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const options = event.target.options;
-    const selected = [];
-    for (let i = 0; i < options.length; i++) {
-      if (options[i].selected) {
-        selected.push(options[i].value);
-      }
-    }
-    setSelectedPizzas(selected);
+  const handleMealsChange = (meal: any) => {
+    setSelectedMeals((prevSelected: any) =>
+      prevSelected.some((m: any) => m.id === meal.id)
+        ? prevSelected.filter((m: any) => m.id !== meal.id)
+        : [...prevSelected, meal]
+    );
   };
 
   const handleSave = () => {
-    console.log('Selected Week:', selectedWeek);
-    console.log('Selected Pizzas:', selectedPizzas);
-    // You can add your save logic here
+    if (!selectedWeek) {
+      setNotification({
+        id: Date.now(),
+        text: 'Please select a week first!',
+        type: "error",
+      });
+      return;
+    }
+    if (selectedMeals?.length === 0) {
+      setNotification({
+        id: Date.now(),
+        text: 'Please select a meal first!',
+        type: "error",
+      });
+      return;
+    }
+
+    
+
+    dispatch(
+      setSelectedMealsForWeek({ week: selectedWeek, meals: selectedMeals })
+    );
+    onClose();
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="fixed z-50 inset-0 flex items-center justify-center bg-black bg-opacity-50">
+       <StackedNotifications
+              notification={notification}
+              setNotification={setNotification}
+            />
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -54,9 +90,16 @@ const Popup = ({ data, onClose }: PopupProps) => {
           ✕
         </button>
 
-        <h2 className="text-xl font-bold mb-4 text-black">Select Week and Pizzas</h2>
+        <h2 className="text-xl font-bold mb-4 text-black">
+          Select Week and Pizzas
+        </h2>
+
+        {/* Week Dropdown */}
         <div className="mb-4">
-          <label htmlFor="week" className="block text-sm font-medium text-black">
+          <label
+            htmlFor="week"
+            className="block text-sm font-medium text-black"
+          >
             Week
           </label>
           <select
@@ -65,13 +108,14 @@ const Popup = ({ data, onClose }: PopupProps) => {
             className="mt-1 block w-full p-2 border border-gray-300 rounded-md text-black"
           >
             <option value="">Select a week</option>
-            <option value="Week 1">Week 1</option>
-            <option value="Week 2">Week 2</option>
-            <option value="Week 3">Week 3</option>
-            <option value="Week 4">Week 4</option>
+            <option value="weekOne">Week 1</option>
+            <option value="weekTwo">Week 2</option>
+            <option value="weekThree">Week 3</option>
+            <option value="weekFour">Week 4</option>
           </select>
         </div>
 
+        {/* Pizza Checkboxes */}
         {selectedWeek && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
@@ -79,32 +123,37 @@ const Popup = ({ data, onClose }: PopupProps) => {
             transition={{ delay: 0.2 }}
             className="mb-4"
           >
-            <label htmlFor="pizza" className="block text-sm font-medium text-black">
-              Pizzas
+            <label className="block text-sm font-medium text-black">
+              Meals
             </label>
-            <select
-              id="pizza"
-              multiple
-              onChange={handlePizzaChange}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md text-black"
-            >
-              {data && data.length > 0 ? (
-                data.map((meal: Meal) => (
-                  <option key={meal.id} value={meal.name} className="text-black">
-                    {meal.name}
-                  </option>
+            <div className="mt-2 h-40 overflow-auto border border-black p-2">
+              {data.length > 0 ? (
+                data.map((meal) => (
+                  <div key={meal.id} className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      id={meal.id}
+                      checked={selectedMeals.some((m: any) => m.id === meal.id)} // ✅ Check by meal.id
+                      onChange={() => handleMealsChange(meal)} // ✅ Pass full meal object
+                      className="text-black"
+                    />
+                    <label htmlFor={meal.id} className="text-black">
+                      {meal.name}
+                    </label>
+                  </div>
                 ))
               ) : (
-                <option disabled>No pizzas available</option>
+                <p className="text-gray-500">No pizzas available</p>
               )}
-            </select>
+            </div>
           </motion.div>
         )}
 
+        {/* Save Button */}
         <div className="flex justify-end">
           <button
             onClick={handleSave}
-            className="bg-[#9B9B9B] text-white px-4 py-2 rounded-md hover:bg-[#7A7A7A]"
+            className="bg-[#004370] text-white px-4 py-2 rounded-md hover:bg-[#004370cf]"
           >
             Save
           </button>

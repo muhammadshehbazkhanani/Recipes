@@ -3,8 +3,8 @@ import { Poppins } from "next/font/google";
 const poppins = Poppins({ subsets: ["latin"], weight: ["400", "600", "700"] });
 
 export const metadata = {
-  title: "Meals Recipes",
-  description: "Explore Racket Hub for top-quality rackets, sports gear, and accessories...",
+  title: "Meals",
+  description: "Discover and organize your weekly meal plans effortlessly. Browse a variety of meals, add them to different weeks, and manage your meal schedule with ease.",
   icons: { icon: "/favicon.ico" },
   robots: "index, follow",
 };
@@ -20,8 +20,8 @@ export default function ServerLayout({ children }: { children: React.ReactNode }
         <link rel="icon" href={metadata.icons.icon} />
         <meta name="robots" content={metadata.robots} />
       </head>
-      <body style={{ fontFamily: poppins.style.fontFamily, backgroundColor: "black" }}>
-        {children}
+      <body style={{ fontFamily: poppins.style.fontFamily, backgroundColor: "white" }}>
+        {children} {/* Only static content here */}
       </body>
     </html>
   );
