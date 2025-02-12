@@ -7,6 +7,8 @@ import { IoMdStar } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
 import StackedNotifications from "@/app/components/stackednotification";
 import { NotificationType } from "../helper/interface";
+import { motion } from "motion/react";
+import Popup from "./popup";
 
 const HomePage = () => {
   const { MealsData } = useSelector((state: RootState) => state.meal);
@@ -15,6 +17,7 @@ const HomePage = () => {
   const [notification, setNotification] = useState<NotificationType | null>(
     null
   );
+  const [buttonOpen, setButtonOpen] = useState<Boolean>(false)
   const dispatch : any = useDispatch()
   useEffect(() => {
     dispatch(fetchMeals({}))
@@ -25,6 +28,14 @@ const HomePage = () => {
   //   text: "Successfully Send Notification",
   //   type: "success",
   // });
+
+  const handleTriggerButton = () => {
+  setButtonOpen(true)  
+  }
+
+  const handleOnClose = () => {
+    setButtonOpen(false)
+  }
 
   return (
     <div className="bg-gradient-to-b from-[#f8e5e5] via-[#f1f5ff] to-[#dff1f1]">
@@ -44,13 +55,35 @@ const HomePage = () => {
     <div className="absolute inset-0 bg-white opacity-70"></div>
 
     {/* Text Content */}
-    <p className="relative z-10 flex flex-col justify-center items-center text-[50px] text-[#222222] font-bold">
-      Optimized Your Meal
+    <div className="relative z-10 flex flex-col justify-center items-center text-[50px] text-[#222222] font-bold">
+    <h1 className="max-w-3xl px-4 text-center text-5xl leading-snug">
+        Optimized Your
+        <span className="relative ml-4">
+         Meal
+         <svg
+             viewBox="20 0 190 100"
+            fill="none"
+            className="absolute -left-2 -right-2 -top-2 bottom-0 translate-y-1"
+          >
+            <motion.path
+              initial={{ pathLength: 0 }}
+              whileInView={{ pathLength: 1 }}
+              transition={{
+                duration: 1.25,
+                ease: "easeInOut",
+              }}
+              d="M142.293 1C106.854 16.8908 6.08202 7.17705 1.23654 43.3756C-2.10604 68.3466 29.5633 73.2652 122.688 71.7518C215.814 70.2384 316.298 70.689 275.761 38.0785C230.14 1.37835 97.0503 24.4575 52.9384 1"
+              stroke="#FACC15"
+              strokeWidth="3"
+            />
+          </svg>
+        </span>
+      </h1>
       <span className="text-[16px] text-[#222222] flex justify-center items-center font-medium">
         Select Meal to Add in Week. You will be able to edit, modify, and
         change the Meal Weeks.
       </span>
-    </p>
+    </div>
   </div>
 </div>
       <div className="mx-48 py-4 ">
@@ -71,16 +104,16 @@ const HomePage = () => {
               {tab}
             </button>
           ))}
-          <button className="bg-[#9B9B9B] text-white font-semibold px-8 py-2 rounded-lg">
-            Add to Week
-          </button>
+         <button onClick={() =>handleTriggerButton()} className="px-6 py-2 font-medium bg-[#9B9B9B] text-white w-fit transition-all shadow-[3px_3px_0px_black] hover:shadow-none hover:translate-x-[3px] hover:translate-y-[3px]">
+        Add to Week
+      </button>
         </div>
       </div>
       <div className="flex justify-center py-5">
   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-[1200px]">
     {MealsData.map((meal, i) => (
-      <div key={i} className="flex justify-center">
-        <div className="flex flex-col rounded-lg p-4 bg-white w-full sm:w-[90%] md:w-[80%] lg:w-[90%] gap-2 relative shadow-lg">
+      <div key={i} className="flex justify-center cursor-pointer">
+        <div className="flex flex-col rounded-lg p-4 bg-white border-2  hover:border-[#004370] w-full sm:w-[90%] md:w-[80%] lg:w-[90%] gap-2 relative shadow-lg">
           <p className="text-white bg-black px-6 rounded-lg absolute right-6 top-6 w-[7rem] text-center font-semibold text-[13px]">
             {meal.mealType?.[0] || "Unknown"}
           </p>
@@ -121,9 +154,8 @@ const HomePage = () => {
     ))}
   </div>
 </div>
-
-
-      
+{buttonOpen &&
+<Popup data={MealsData} onClose={handleOnClose} />}
     </div>
   );
 };
