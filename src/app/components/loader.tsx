@@ -1,8 +1,7 @@
-const Example = () => {
+const Loader = () => {
     return (
       <div>
         <CutoutTextLoader
-          height="450px"
           background="white"
           // NOTE: Using GIFs for the background looks super cool :)
           imgUrl="/pizza.webp"
@@ -12,16 +11,14 @@ const Example = () => {
   };
   
   const CutoutTextLoader = ({
-    height,
     background,
     imgUrl,
   }: {
-    height: string;
     background: string;
     imgUrl: string;
   }) => {
     return (
-      <div className="relative" style={{ height }}>
+      <div className="relative h-screen" >
         <div
           className="absolute inset-0 z-0"
           style={{
@@ -35,13 +32,13 @@ const Example = () => {
           className="absolute inset-0 animate-pulse z-10"
         />
         <span
-          className="font-black absolute inset-0 z-20 text-center bg-clip-text text-transparent pointer-events-none"
+          className="font-black absolute inset-0 z-20 flex justify-center items-center text-center bg-clip-text text-transparent pointer-events-none"
           style={{
             backgroundImage: `url(${imgUrl})`,
             backgroundPosition: "center",
             backgroundSize: "cover",
             fontSize: "clamp(3rem, 12vw, 10rem)",
-            lineHeight: height,
+            lineHeight: "340px",
           }}
         >
           Loading...
@@ -50,5 +47,5 @@ const Example = () => {
     );
   };
   
-  export default Example;
+  export default Loader;
   
