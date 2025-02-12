@@ -19,7 +19,7 @@ const HomePage = () => {
   const [notification, setNotification] = useState<NotificationType | null>(
     null
   );
-  const [buttonOpen, setButtonOpen] = useState<Boolean>(false)
+  const [buttonOpen, setButtonOpen] = useState<boolean>(false)
   const dispatch : any = useDispatch();
   const fetchData = useCallback(() => {
     dispatch(fetchMeals({}));
@@ -112,35 +112,42 @@ const HomePage = () => {
           </svg>
         </span>
       </h1>
-      <span className="text-[14px] text-[#222222] flex justify-center items-center font-medium">
+      <span className="text-[14px] text-center text-[#222222] flex justify-center items-center font-medium">
         Select Meal to Add in Week. You will be able to edit. modify and
         change the Meal Weeks.
       </span>
     </div>
   </div>
 </div>
-      <div className="mx-48 py-4 ">
+<div className="mx-6 sm:mx-12 md:mx-20 lg:mx-48 py-4 text-center md:text-left">
         <p className="text-[25px] text-[#191919] font-semibold"> Week Orders</p>
       </div>
       <div className="w-full p-6 bg-white">
-        <div className="flex justify-center gap-28 my-4 ">
-          {tabs.map((tab) => (
-            <button
-              key={tab}
-              className={`px-4 py-2 rounded-t-lg transition-colors duration-200 text-[14px] font-semibold ${
-                activeTab === tab
-                  ? "border-b-[4px] border-[#004370] text-[#004370]"
-                  : " text-[#1E1E1E]"
-              }`}
-              onClick={() => setActiveTab(tab)}
-            >
-              {tab}
-            </button>
-          ))}
-         <button onClick={() =>handleTriggerButton()} className="px-6 py-2 font-medium bg-[#004370] text-white w-fit transition-all shadow-[3px_3px_0px_black] hover:shadow-none hover:translate-x-[3px] hover:translate-y-[3px]">
-        Add to Week
+      <div className="flex flex-wrap justify-center gap-6 md:gap-14 lg:gap-20 xl:gap-28 my-4">
+  <div className="flex flex-wrap justify-center gap-4 md:gap-6">
+    {tabs?.map((tab) => (
+      <button
+        key={tab}
+        className={`px-4 py-2 rounded-t-lg transition-colors duration-200 text-sm md:text-[14px] font-semibold ${
+          activeTab === tab
+            ? "border-b-[4px] border-[#004370] text-[#004370]"
+            : "text-[#1E1E1E]"
+        }`}
+        onClick={() => setActiveTab(tab)}
+      >
+        {tab}
       </button>
-        </div>
+    ))}
+  </div>
+  
+  <button
+    onClick={handleTriggerButton}
+    className="px-6 py-2 font-medium bg-[#004370] text-white transition-all shadow-[3px_3px_0px_black] hover:shadow-none hover:translate-x-[3px] hover:translate-y-[3px]"
+  >
+    Add to Week
+  </button>
+</div>
+
       </div>
       <div className="flex justify-center py-20">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-[1200px]">
